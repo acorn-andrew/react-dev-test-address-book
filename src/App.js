@@ -16,20 +16,17 @@ function App() {
    * Form fields states
    * TODO: Write a custom hook to set form fields in a more generic way:
    * - Hook must expose an onChange handler to be used by all <InputText /> and <Radio /> components
-   * - Hook must expose all text form field values, like so: { zipCode: '', houseNumber: '', ...etc }
+   * - Hook must expose all text form field values
    * - Remove all individual React.useState
-   * - Remove all individual onChange handlers, like handleZipCodeChange for example
+   * - Remove all individual onChange handlers, like handleAddressChange for example
    */
-  const [zipCode, setZipCode] = React.useState("");
-  const [houseNumber, setHouseNumber] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
-  const [selectedAddress, setSelectedAddress] = React.useState("");
-  /**
-   * Results states
-   */
   const [error, setError] = React.useState(undefined);
-  const [addresses, setAddresses] = React.useState([]);
+  const [address, setAddress] = React.useState("");
+  const [verifiedAddress, setVerifiedAddress] = React.useState("");
+  const [selectedAddress, setSelectedAddress] = React.useState("");
+
   /**
    * Redux actions
    */
@@ -38,24 +35,20 @@ function App() {
   /**
    * Text fields onChange handlers
    */
-  const handleZipCodeChange = (e) => setZipCode(e.target.value);
-
-  const handleHouseNumberChange = (e) => setHouseNumber(e.target.value);
-
+  const handleAddressChange = (e) => setAddress(e.target.value);
   const handleFirstNameChange = (e) => setFirstName(e.target.value);
-
   const handleLastNameChange = (e) => setLastName(e.target.value);
-
-  const handleSelectedAddressChange = (e) => setSelectedAddress(e.target.value);
-
+  const handleVerifiedAddressChange = (e) => setSelectedAddress(e.target.value);
+  
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
-
-    /** TODO: Fetch addresses based on houseNumber and zipCode
-     * - Example URL of API: http://api.postcodedata.nl/v1/postcode/?postcode=1211EP&streetnumber=60&ref=domeinnaam.nl&type=json
+    const googleAddressValidationAPIKey = "AIzaSyDiLoaAqYydiF-d5A7kuL-H5V_0jc6K-V4";
+     /** TODO: Verify address using Google's Address Verification API
+     * - Example URL of API: https://addressvalidation.googleapis.com/v1:validateAddress?key=AIzaSyDiLoaAqYydiF-d5A7kuL-H5V_0jc6K-V4
+     * - Create an object with these properties { city, houseNumber, postcode, street, lat, lon } and set the corresponding values using the response data
+     * - Pass this object to transformAddress() and set the result to the verified address state
+     * - If any of the necessary address components in the response are missing, do not show any results and ask the customer to enter a more complete address 
      * - Handle errors if they occur
-     * - Handle successful response by updating the `addresses` in the state using `setAddresses`
-     * - Make sure to add the houseNumber to each found address in the response using `transformAddress()` function
      * - Bonus: Add a loading state in the UI while fetching addresses
      */
   };
@@ -63,28 +56,21 @@ function App() {
   const handlePersonSubmit = (e) => {
     e.preventDefault();
 
-    if (!selectedAddress || !addresses.length) {
-      setError(
-        "No address selected, try to select an address or find one if you haven't"
-      );
-      return;
-    }
-
-    const foundAddress = addresses.find(
-      (address) => address.id === selectedAddress
-    );
-
-    addAddress({ ...foundAddress, firstName, lastName });
+    addAddress({ ...verifiedAddress, firstName, lastName });
   };
 
   return (
     <main>
       <Section>
         <h1>
-          Create your own address book!
+         My Address Book
+          <br />
           <br />
           <small>
-            Enter an address by zipcode add personal info and done! 👏
+            🇨🇦 Enter a Canadian mailing address in the field below
+            <br />
+            <br />
+            ✅ Once verified, you will be able to name it and save it
           </small>
         </h1>
         {/* TODO: Create generic <Form /> component to display form rows, legend and a submit button  */}
@@ -93,36 +79,25 @@ function App() {
             <legend>🏠 Find an address</legend>
             <div className="form-row">
               <InputText
-                name="zipCode"
-                onChange={handleZipCodeChange}
-                placeholder="Zip Code"
-                value={zipCode}
-              />
-            </div>
-            <div className="form-row">
-              <InputText
-                name="houseNumber"
-                onChange={handleHouseNumberChange}
-                value={houseNumber}
-                placeholder="House number"
+                name="canadianAddress"
+                onChange={handleAddressChange}
+                placeholder="Complete mailing address"
+                value={address}
               />
             </div>
             <Button type="submit">Find</Button>
           </fieldset>
         </form>
-        {addresses.length > 0 &&
-          addresses.map((address) => {
-            return (
-              <Radio
-                name="selectedAddress"
-                id={address.id}
-                key={address.id}
-                onChange={handleSelectedAddressChange}
-              >
-                <Address address={address} />
-              </Radio>
-            );
-          })}
+        {verifiedAddress && (
+          <Radio
+            name="verifiedAddress"
+            id={verifiedAddress.id}
+            key={verifiedAddress.id}
+            onChange={handleVerifiedAddressChange}
+          >
+            <Address address={verifiedAddress} />
+          </Radio>
+        )}
         {/* TODO: Create generic <Form /> component to display form rows, legend and a submit button  */}
         {selectedAddress && (
           <form onSubmit={handlePersonSubmit}>
@@ -144,7 +119,7 @@ function App() {
                   value={lastName}
                 />
               </div>
-              <Button type="submit">Add to addressbook</Button>
+              <Button type="submit">Add to Address Book</Button>
             </fieldset>
           </form>
         )}

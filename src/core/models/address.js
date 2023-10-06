@@ -1,6 +1,6 @@
-export default function transformAddress(data) {
+export default function transformAddress(structuredAddress) {
   const { firstName, lastName, city, houseNumber, lat, lon, postcode, street } =
-    data;
+  structuredAddress;
   return {
     city: city || "",
     firstName: firstName || "",

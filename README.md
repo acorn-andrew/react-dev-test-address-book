@@ -15,7 +15,7 @@ In order to start this assignment you need to:
 > Note: You will find some Bonus TODO's. These are not mandatory for completing this assignment. Feel free to flex your programming skills 💪
 
 ## TODO's 
-Here is a list of all the TODO's to make life a bit easier:
+Here is a list of all the TODO's to make life a bit easier (more details can be found in the code comments):
 
 ### Styling
 - [ ] Add the 'Roboto' font from Google fonts and add it as a global CSS var called `--font-primary`.
@@ -24,7 +24,7 @@ Here is a list of all the TODO's to make life a bit easier:
 
 ### React
 - [ ] Write a custom hook to set form fields in a more generic way.
-- [ ] Fetch addresses based on houseNumber and zipCode.
+- [ ] Verify complete Canadian mailing addresses using Google's Address Validation API
 - [ ] Create generic `<Form />` component to display form rows, legend and a submit button.
 - [ ] Create an `<ErrorMessage />` component for displaying an error message.
 - [ ] Add a button to clear all form fields. Button must look different from the default primary button, see design.
@@ -37,7 +37,7 @@ Here is a list of all the TODO's to make life a bit easier:
 ## Submitting assignment
 You can submit your assignment by creating a merge request for your `feat/todo-assignment` branch. That's it, good luck! 🚀
 
-> If any questions might arise about the assignment please contact l.zimmerman@wearetriple.com
+> If any questions might arise about the assignment please contact andrew@acorn.me
 
 
 
